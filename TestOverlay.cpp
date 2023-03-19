@@ -62,7 +62,7 @@ void transpose(Matrix& matrix) {
 
 bool worldToScreen(Vector3 in, Matrix matrix, Vector3& screenSpace) {
 	transpose(matrix);
-          	Vector3 translationVector = Vector3{ matrix.m3,matrix.m7,matrix.m11 };
+	Vector3 translationVector = Vector3{ matrix.m3,matrix.m7,matrix.m11 };
 	Vector3 up = Vector3{ matrix.m1,matrix.m5,matrix.m9 };
 	Vector3 right = Vector3{ matrix.m0,matrix.m4,matrix.m8 };
 
@@ -80,15 +80,16 @@ bool worldToScreen(Vector3 in, Matrix matrix, Vector3& screenSpace) {
 	return true;
 }
 
-intptr_t GetGameWorld(IMemoryInterface* pMemInterface) {
-	intptr_t result = Memory::ReadValue<intptr_t>(pMemInterface, pMemInterface->GetModuleBase() + 0x8);
-	intptr_t result = Memory::ReadValue<intptr_t>(pMemInterface, result);
-	intptr_t result = Memory::ReadValue<intptr_t>(pMemInterface, result+0x28);
-	intptr_t result = Memory::ReadValue<intptr_t>(pMemInterface, result);
-	intptr_t result = Memory::ReadValue<intptr_t>(pMemInterface, result+0x60);
-	intptr_t result = Memory::ReadValue<intptr_t>(pMemInterface, result+0x28);
-	return Memory::ReadValue<intptr_t>(pMemInterface, result);
-	//niggerbullshuitmonek
+int64_t GetGameWorld(IMemoryInterface* pMemInterface) {
+	intptr_t result = Memory::ReadValue<intptr_t>(pMemInterface, 0x7FF8F4B60000 + 0x183ABF0);
+	result = Memory::ReadValue<intptr_t>(pMemInterface, result+0x08);
+	result = Memory::ReadValue<intptr_t>(pMemInterface, result);
+	result = Memory::ReadValue<intptr_t>(pMemInterface, result+0x28);
+	result = Memory::ReadValue<intptr_t>(pMemInterface, result);
+	result = Memory::ReadValue<intptr_t>(pMemInterface, result+0x60);
+	result = Memory::ReadValue<intptr_t>(pMemInterface, result+0x28);
+	Memory::ReadValue<int64_t>(pMemInterface, result);
+	return result;
 }
 
 void TestOverlay::DrawImGui() {
@@ -96,7 +97,7 @@ void TestOverlay::DrawImGui() {
 		int64_t onlineusers = Memory::ReadValue<int64_t>(this->pMemInterface, GetGameWorld(pMemInterface) + 0xA0);
 		
 		if (onlineusers) {
-			int player_count = Memory::ReadValue<int>(this->pMemInterface, onlineusers + 0x0018);
+		int player_count = Memory::ReadValue<int>(this->pMemInterface, onlineusers + 0x0018);
 			ImGui::Text("PlayerCount: %i", player_count);
 			int64_t list_base = Memory::ReadValue<int64_t>(this->pMemInterface, onlineusers + 0x0010);
 			if (player_count > 0 && list_base) {
@@ -106,9 +107,8 @@ void TestOverlay::DrawImGui() {
 				EFTPlayer player;
 				Matrix matrix;
 				intptr_t result = 0;
-				transpose(matrix);
 
-				result = Memory::ReadValue<intptr_t>(pMemInterface, pMemInterface->GetModuleBase() + 0x017FFD28);
+				result = Memory::ReadValue<intptr_t>(pMemInterface, 0x7FF8F4B60000 + 0x017FFD28);
 				result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x10);
 				result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x28);
 				result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x10);

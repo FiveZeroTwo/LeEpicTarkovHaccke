@@ -84,7 +84,7 @@ bool DriverInterop::SetTargetModule(wchar_t* moduleName) {
 }
 
 DriverInterop::DriverInterop(wchar_t* name) : pid(0) {
-    this->handle = CreateFileW(std::wstring(L"\\\\.\\").append(name).c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    this->handle = CreateFileW(L"\\\\.\\TestDriver", GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 }
 
 DriverInterop::~DriverInterop() {
