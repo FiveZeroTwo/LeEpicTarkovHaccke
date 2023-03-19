@@ -18,6 +18,13 @@ struct EFTPlayer
 	Vector3 location;
 };
 
+struct BaseObject
+{
+	uint64_t previousObjectLink; //0x0000
+	uint64_t nextObjectLink; //0x0008
+	uint64_t object; //0x0010
+};
+
 class ListInternal
 {
 public:
@@ -80,8 +87,10 @@ bool worldToScreen(Vector3 in, Matrix matrix, Vector3& screenSpace) {
 	return true;
 }
 
+#define use_driver 0;
+
 int64_t GetGameWorld(IMemoryInterface* pMemInterface) {
-	intptr_t result = Memory::ReadValue<intptr_t>(pMemInterface, 0x7FF8F4B60000 + 0x183ABF0);
+	intptr_t result = Memory::ReadValue<intptr_t>(pMemInterface, pMemInterface->GetModuleBase() + 0x183ABF0);
 	result = Memory::ReadValue<intptr_t>(pMemInterface, result+0x08);
 	result = Memory::ReadValue<intptr_t>(pMemInterface, result);
 	result = Memory::ReadValue<intptr_t>(pMemInterface, result+0x28);
@@ -92,52 +101,109 @@ int64_t GetGameWorld(IMemoryInterface* pMemInterface) {
 	return result;
 }
 
+int64_t GetGameWorldMightNotWork(IMemoryInterface* pMemInterface,intptr_t result) {
+	result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x30);
+	result = Memory::ReadValue<intptr_t>(pMemInterface, result+0x18);
+	result = Memory::ReadValue<intptr_t>(pMemInterface, result+0x28);
+
+	return result;
+}
+
+Matrix GetCameraMatrixTarkov(IMemoryInterface* pMemInterface) {
+	Matrix matrix;
+	intptr_t result = 0;
+	result = Memory::ReadValue<intptr_t>(pMemInterface, pMemInterface->GetModuleBase() + 0x017FFD28);
+	result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x10);
+	result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x28);
+	result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x10);
+	result = Memory::ReadValue<intptr_t>(pMemInterface, result);
+	result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x30);
+	result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x18);
+	matrix = Memory::ReadValue<Matrix>(pMemInterface, result + 0x0DC);
+	return matrix;
+}
+
+intptr_t GetObjectFromList(IMemoryInterface* pMemInterface,intptr_t listPointer, intptr_t lastObjectPointer, const char* objectName) {
+	char name[256];
+	intptr_t classNamePointer = 0x0;
+	BaseObject activeObject = Memory::ReadValue<BaseObject>(pMemInterface, listPointer);
+	BaseObject lastObject = Memory::ReadValue<BaseObject>(pMemInterface, lastObjectPointer);
+
+	if (activeObject.object != 0x0) {
+		while (activeObject.object != 0 && activeObject.object != lastObject.object) {
+			classNamePointer = Memory::ReadValue<intptr_t>(pMemInterface,activeObject.object + 0x60);
+			pMemInterface->ReadRaw(classNamePointer, &name, sizeof(name));
+			if (strcmp(name, objectName) == 0) {
+				return activeObject.object;
+			}
+
+			activeObject = Memory::ReadValue<BaseObject>(pMemInterface, activeObject.nextObjectLink);
+		}
+	}
+
+	if (lastObject.object != 0x0) {
+		classNamePointer = Memory::ReadValue<intptr_t>(pMemInterface,lastObject.object + 0x60);
+		pMemInterface->ReadRaw(classNamePointer, &name, 256);
+		if (strcmp(name, objectName) == 0) {
+			return lastObject.object;
+		}
+	}
+
+	return 0;
+}
+
 void TestOverlay::DrawImGui() {
-	if (1) {
-		int64_t onlineusers = Memory::ReadValue<int64_t>(this->pMemInterface, GetGameWorld(pMemInterface) + 0xA0);
-		
-		if (onlineusers) {
+	intptr_t gameObjectManagerDerefrenced = Memory::ReadValue<intptr_t>(pMemInterface,pMemInterface->GetModuleBase() + 0x017FFD28);
+	std::array<intptr_t, 2> active_objects = Memory::ReadValue<std::array<intptr_t, 2>>(pMemInterface, gameObjectManagerDerefrenced + 0x20);
+	if (!active_objects[0] || !active_objects[1]) {
+		return;
+	}
+
+	intptr_t GameWorld = GetObjectFromList(pMemInterface, active_objects[1], active_objects[0], "GameWorld");
+	intptr_t gameWorld = GetGameWorldMightNotWork(pMemInterface,GameWorld);
+ 	int64_t onlineusers = Memory::ReadValue<int64_t>(this->pMemInterface, gameWorld + 0xA0);
+
+	if (GameWorld == gameWorld) {
+		int x = 10;
+	}
+
+	if (onlineusers) {
 		int player_count = Memory::ReadValue<int>(this->pMemInterface, onlineusers + 0x0018);
-			ImGui::Text("PlayerCount: %i", player_count);
-			int64_t list_base = Memory::ReadValue<int64_t>(this->pMemInterface, onlineusers + 0x0010);
-			if (player_count > 0 && list_base) {
-				constexpr auto BUFFER_SIZE = 128;
-				uint64_t* player_buffer = new uint64_t[player_count];
-				this->pMemInterface->ReadRaw(list_base + 0x0020, player_buffer, sizeof(uint64_t) * player_count);
-				EFTPlayer player;
-				Matrix matrix;
-				intptr_t result = 0;
+		ImGui::Text("PlayerCount: %i", player_count);
+		int64_t list_base = Memory::ReadValue<int64_t>(this->pMemInterface, onlineusers + 0x0010);
+		if (player_count > 0 && list_base) {
+			constexpr auto BUFFER_SIZE = 128;
+			uint64_t* player_buffer = new uint64_t[player_count];
+			this->pMemInterface->ReadRaw(list_base + 0x0020, player_buffer, sizeof(uint64_t) * player_count);
+			EFTPlayer player;
+			intptr_t result = 0;
 
-				result = Memory::ReadValue<intptr_t>(pMemInterface, 0x7FF8F4B60000 + 0x017FFD28);
-				result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x10);
-				result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x28);
-				result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x10);
-				result = Memory::ReadValue<intptr_t>(pMemInterface, result);
-				result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x30);
-				result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x18);
-				matrix = Memory::ReadValue<Matrix>(pMemInterface, result + 0x0DC);
 
-				for (int i = 0; i < player_count; i++) {
-					player.instance = player_buffer[i];
-					Vector3 screenPoint = { 0,0,0};
-					result = Memory::ReadValue<intptr_t>(pMemInterface, player.instance + 0x28);
-					Vector3 vec3 = Memory::ReadValue<Vector3>(pMemInterface, result + 0xAC);
-					worldToScreen(vec3, matrix, screenPoint);
-					DrawText("Person", screenPoint.x, screenPoint.y, 12.f,BLUE);
-					if (ImGui::Selectable(TextFormat("Player %i: %f,%f,%f,%p", i, vec3.x,vec3.y,vec3.z,player.instance))) {
-						std::stringstream stream{};
-						stream << std::hex << player.instance;
-						ImGui::SetClipboardText(stream.str().c_str());
-					}
+			for (int i = 0; i < player_count; i++) {
+				player.instance = player_buffer[i];
+				Vector3 screenPoint = { 0,0,0 };
+				//character controller
+				result = Memory::ReadValue<intptr_t>(pMemInterface, player.instance + 0x28);
+				//positon (vector3)
+				//0x48
+				Vector3 vec3 = Memory::ReadValue<Vector3>(pMemInterface, result + 0x48);
+				worldToScreen(vec3, GetCameraMatrixTarkov(pMemInterface), screenPoint);
+				DrawText("Person", screenPoint.x, screenPoint.y, 12.f, BLUE);
+				if (ImGui::Selectable(TextFormat("Player %i: %f,%f,%f,%p", i, vec3.x, vec3.y, vec3.z, player.instance))) {
+					std::stringstream stream{};
+					stream << std::hex << player.instance;
+					ImGui::SetClipboardText(stream.str().c_str());
 				}
 			}
-			else {
-				ImGui::Text("No list_base");
-			}
+
+			delete[]player_buffer;
 		}
 		else {
-			ImGui::Text("!onlineusers");
+			ImGui::Text("No list_base");
 		}
+	}
+	else {
+		ImGui::Text("!onlineusers");
 	}
 }
 

@@ -5,7 +5,7 @@
 #include "TestOverlay.h"
 #include "DriverInterop.h"
 
-#define USE_DRIVER 1
+#define USE_DRIVER 0
 
 int main() {
 	IMemoryInterface* pMemoryInterface;
@@ -18,7 +18,7 @@ int main() {
 	BasicMemoryInterface basicMemoryInterface{};
 	pMemoryInterface = &basicMemoryInterface;
 #endif
-	TestOverlay overlay{ pMemoryInterface, "TestOverlay", -1};
+	TestOverlay overlay{ pMemoryInterface, "TestOverlay", 60};
 	while (overlay.IsRunning()) {
 		overlay.Update();
 		overlay.Draw();
