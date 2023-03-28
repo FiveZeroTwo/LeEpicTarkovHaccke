@@ -9,7 +9,8 @@
 #include <raymath.h>
 #include <sstream>
 #include <vector>
-
+#include <xmmintrin.h>  
+#include <emmintrin.h>
 
 struct EFTPlayer
 {
@@ -17,6 +18,14 @@ struct EFTPlayer
 	Vector3 headPos;
 	Vector3 location;
 };
+
+struct GameObjectManager
+{
+	uint64_t lastTaggedObject; //0x0000
+	uint64_t taggedObjects; //0x0008
+	uint64_t lastActiveObject; //0x0010
+	uint64_t activeObjects; //0x0018
+}; //Size: 0x0010
 
 struct BaseObject
 {
@@ -87,7 +96,80 @@ bool worldToScreen(Vector3 in, Matrix matrix, Vector3& screenSpace) {
 	return true;
 }
 
-#define use_driver 0;
+struct transform_access_read_only_t
+{
+	uint64_t transform_data{};
+};
+
+struct transform_data_t
+{
+	uint64_t transform_array{};
+	uint64_t transform_indices{};
+};
+
+struct matrix34_t
+{
+	Vector4 vec0{};
+	Vector4 vec1{};
+	Vector4 vec2{};
+};
+
+Vector3 get_position(uintptr_t transform, IMemoryInterface* pMemInterface)
+{
+	__m128 result;
+
+	const __m128 mulVec0 = { -2.000, 2.000, -2.000, 0.000 };
+	const __m128 mulVec1 = { 2.000, -2.000, -2.000, 0.000 };
+	const __m128 mulVec2 = { -2.000, -2.000, 2.000, 0.000 };
+
+	transform_access_read_only_t pTransformAccessReadOnly = Memory::ReadValue<transform_access_read_only_t>(pMemInterface,transform + 0x38);
+	unsigned int index = Memory::ReadValue<unsigned int>(pMemInterface,transform + 0x40);
+	transform_data_t transformData = Memory::ReadValue<transform_data_t>(pMemInterface,pTransformAccessReadOnly.transform_data + 0x18);
+
+	if (transformData.transform_array && transformData.transform_indices)
+	{
+		result = Memory::ReadValue<__m128>(pMemInterface,transformData.transform_array + (uint64_t)0x30 * index);
+		int transformIndex = Memory::ReadValue<int>(pMemInterface,transformData.transform_indices + (uint64_t)0x4 * index);
+		int pSafe = 0;
+		while (transformIndex >= 0 && pSafe++ < 200)
+		{
+			matrix34_t matrix34 = Memory::ReadValue<matrix34_t>(pMemInterface,transformData.transform_array + (uint64_t)0x30 * transformIndex);
+
+			__m128 xxxx = _mm_castsi128_ps(_mm_shuffle_epi32(*(__m128i*)(&matrix34.vec1), 0x00));	// xxxx
+			__m128 yyyy = _mm_castsi128_ps(_mm_shuffle_epi32(*(__m128i*)(&matrix34.vec1), 0x55));	// yyyy
+			__m128 zwxy = _mm_castsi128_ps(_mm_shuffle_epi32(*(__m128i*)(&matrix34.vec1), 0x8E));	// zwxy
+			__m128 wzyw = _mm_castsi128_ps(_mm_shuffle_epi32(*(__m128i*)(&matrix34.vec1), 0xDB));	// wzyw
+			__m128 zzzz = _mm_castsi128_ps(_mm_shuffle_epi32(*(__m128i*)(&matrix34.vec1), 0xAA));	// zzzz
+			__m128 yxwy = _mm_castsi128_ps(_mm_shuffle_epi32(*(__m128i*)(&matrix34.vec1), 0x71));	// yxwy
+			__m128 tmp7 = _mm_mul_ps(*(__m128*)(&matrix34.vec2), result);
+
+			result = _mm_add_ps(
+				_mm_add_ps(
+					_mm_add_ps(
+						_mm_mul_ps(
+							_mm_sub_ps(
+								_mm_mul_ps(_mm_mul_ps(xxxx, mulVec1), zwxy),
+								_mm_mul_ps(_mm_mul_ps(yyyy, mulVec2), wzyw)),
+							_mm_castsi128_ps(_mm_shuffle_epi32(_mm_castps_si128(tmp7), 0xAA))),
+						_mm_mul_ps(
+							_mm_sub_ps(
+								_mm_mul_ps(_mm_mul_ps(zzzz, mulVec2), wzyw),
+								_mm_mul_ps(_mm_mul_ps(xxxx, mulVec0), yxwy)),
+							_mm_castsi128_ps(_mm_shuffle_epi32(_mm_castps_si128(tmp7), 0x55)))),
+					_mm_add_ps(
+						_mm_mul_ps(
+							_mm_sub_ps(
+								_mm_mul_ps(_mm_mul_ps(yyyy, mulVec0), yxwy),
+								_mm_mul_ps(_mm_mul_ps(zzzz, mulVec1), zwxy)),
+							_mm_castsi128_ps(_mm_shuffle_epi32(_mm_castps_si128(tmp7), 0x00))),
+						tmp7)), *(__m128*)(&matrix34.vec0));
+
+			transformIndex = Memory::ReadValue<int>(pMemInterface,transformData.transform_indices + (uint64_t)0x4 * transformIndex);
+		}
+	}
+
+	return Vector3(result.m128_f32[0], result.m128_f32[1], result.m128_f32[2]);
+}
 
 int64_t GetGameWorld(IMemoryInterface* pMemInterface) {
 	intptr_t result = Memory::ReadValue<intptr_t>(pMemInterface, pMemInterface->GetModuleBase() + 0x183ABF0);
@@ -109,30 +191,20 @@ int64_t GetGameWorldMightNotWork(IMemoryInterface* pMemInterface,intptr_t result
 	return result;
 }
 
-Matrix GetCameraMatrixTarkov(IMemoryInterface* pMemInterface) {
-	Matrix matrix;
-	intptr_t result = 0;
-	result = Memory::ReadValue<intptr_t>(pMemInterface, pMemInterface->GetModuleBase() + 0x017FFD28);
-	result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x10);
-	result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x28);
-	result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x10);
-	result = Memory::ReadValue<intptr_t>(pMemInterface, result);
-	result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x30);
-	result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x18);
-	matrix = Memory::ReadValue<Matrix>(pMemInterface, result + 0x0DC);
-	return matrix;
-}
 
 intptr_t GetObjectFromList(IMemoryInterface* pMemInterface,intptr_t listPointer, intptr_t lastObjectPointer, const char* objectName) {
 	char name[256];
 	intptr_t classNamePointer = 0x0;
 	BaseObject activeObject = Memory::ReadValue<BaseObject>(pMemInterface, listPointer);
 	BaseObject lastObject = Memory::ReadValue<BaseObject>(pMemInterface, lastObjectPointer);
+	if (strcmp("FPS Camera", objectName) == 0) {
+		int x = 1;
+	}
 
 	if (activeObject.object != 0x0) {
-		while (activeObject.object != 0 && activeObject.object != lastObject.object) {
+ 		while (activeObject.object != 0 && activeObject.object != lastObject.object) {
 			classNamePointer = Memory::ReadValue<intptr_t>(pMemInterface,activeObject.object + 0x60);
-			pMemInterface->ReadRaw(classNamePointer, &name, sizeof(name));
+			pMemInterface->ReadRaw(classNamePointer + 0x0, &name, sizeof(name));
 			if (strcmp(name, objectName) == 0) {
 				return activeObject.object;
 			}
@@ -143,7 +215,7 @@ intptr_t GetObjectFromList(IMemoryInterface* pMemInterface,intptr_t listPointer,
 
 	if (lastObject.object != 0x0) {
 		classNamePointer = Memory::ReadValue<intptr_t>(pMemInterface,lastObject.object + 0x60);
-		pMemInterface->ReadRaw(classNamePointer, &name, 256);
+		pMemInterface->ReadRaw(classNamePointer+0x0, &name, 256);
 		if (strcmp(name, objectName) == 0) {
 			return lastObject.object;
 		}
@@ -152,20 +224,25 @@ intptr_t GetObjectFromList(IMemoryInterface* pMemInterface,intptr_t listPointer,
 	return 0;
 }
 
+Matrix GetCameraMatrixTarkov(IMemoryInterface* pMemInterface, std::array<intptr_t, 2> taggedObjects) {
+	Matrix matrix;
+	intptr_t camera = GetObjectFromList(pMemInterface, taggedObjects[1], taggedObjects[0], "FPS Camera");
+	camera = Memory::ReadValue<intptr_t>(pMemInterface, camera + 0x30);
+	camera = Memory::ReadValue<intptr_t>(pMemInterface, camera + 0x18);
+	matrix = Memory::ReadValue<Matrix>(pMemInterface, camera + 0x0DC);
+	return matrix;
+}
 void TestOverlay::DrawImGui() {
 	intptr_t gameObjectManagerDerefrenced = Memory::ReadValue<intptr_t>(pMemInterface,pMemInterface->GetModuleBase() + 0x017FFD28);
-	std::array<intptr_t, 2> active_objects = Memory::ReadValue<std::array<intptr_t, 2>>(pMemInterface, gameObjectManagerDerefrenced + 0x20);
-	if (!active_objects[0] || !active_objects[1]) {
+	std::array<intptr_t, 2> activeObjects = Memory::ReadValue<std::array<intptr_t, 2>>(pMemInterface, gameObjectManagerDerefrenced + 0x20);
+	std::array<intptr_t, 2> taggedObjects = Memory::ReadValue<std::array<intptr_t, 2>>(pMemInterface,gameObjectManagerDerefrenced + 0x8);
+	if (!activeObjects[0] || !activeObjects[1] || !taggedObjects[0] || !taggedObjects[1]) {
 		return;
 	}
 
-	intptr_t GameWorld = GetObjectFromList(pMemInterface, active_objects[1], active_objects[0], "GameWorld");
+	intptr_t GameWorld = GetObjectFromList(pMemInterface, activeObjects[1], activeObjects[0], "GameWorld");
 	intptr_t gameWorld = GetGameWorldMightNotWork(pMemInterface,GameWorld);
- 	int64_t onlineusers = Memory::ReadValue<int64_t>(this->pMemInterface, gameWorld + 0xA0);
-
-	if (GameWorld == gameWorld) {
-		int x = 10;
-	}
+	int64_t onlineusers = Memory::ReadValue<int64_t>(this->pMemInterface, gameWorld + 0xA0);
 
 	if (onlineusers) {
 		int player_count = Memory::ReadValue<int>(this->pMemInterface, onlineusers + 0x0018);
@@ -183,11 +260,16 @@ void TestOverlay::DrawImGui() {
 				player.instance = player_buffer[i];
 				Vector3 screenPoint = { 0,0,0 };
 				//character controller
-				result = Memory::ReadValue<intptr_t>(pMemInterface, player.instance + 0x28);
+				result = Memory::ReadValue<intptr_t>(pMemInterface, player.instance + 0xA8);
+				result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x28);
+				result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x28);
+				result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x10);
+				result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x20);
 				//positon (vector3)
-				//0x48
-				Vector3 vec3 = Memory::ReadValue<Vector3>(pMemInterface, result + 0x48);
-				worldToScreen(vec3, GetCameraMatrixTarkov(pMemInterface), screenPoint);
+				//0x481cdbb5d8000
+				//Vector3 vec3 = Memory::ReadValue<Vector3>(pMemInterface, result+0xAC);
+				Vector3 vec3 = get_position(Memory::ReadValue<intptr_t>(pMemInterface, result + 0x10),pMemInterface);
+				worldToScreen(vec3, GetCameraMatrixTarkov(pMemInterface,taggedObjects), screenPoint);
 				DrawText("Person", screenPoint.x, screenPoint.y, 12.f, BLUE);
 				if (ImGui::Selectable(TextFormat("Player %i: %f,%f,%f,%p", i, vec3.x, vec3.y, vec3.z, player.instance))) {
 					std::stringstream stream{};

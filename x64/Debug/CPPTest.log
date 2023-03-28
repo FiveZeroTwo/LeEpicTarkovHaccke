@@ -1,5 +1,5 @@
 ﻿  TestOverlay.cpp
-C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\TestOverlay.cpp(191,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\TestOverlay.cpp(191,50): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\TestOverlay.cpp(191,35): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\TestOverlay.cpp(273,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\TestOverlay.cpp(273,50): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\TestOverlay.cpp(273,35): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   CPPTest.vcxproj -> C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\x64\Debug\CPPTest.exe
