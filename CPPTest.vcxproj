@@ -131,6 +131,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BasicMemoryInterface.cpp" />
+    <ClCompile Include="CameraUtilites.cpp" />
+    <ClCompile Include="EFTPlayer.cpp" />
+    <ClCompile Include="GameWorld.cpp" />
     <ClCompile Include="TestOverlay.cpp" />
     <ClCompile Include="CPPTest.cpp" />
     <ClCompile Include="DriverInterop.cpp" />
@@ -141,6 +144,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BasicMemoryInterface.h" />
+    <ClInclude Include="CameraUtilites.h" />
+    <ClInclude Include="EFTPlayer.h" />
+    <ClInclude Include="GameWorld.h" />
     <ClInclude Include="IMemoryInterface.h" />
     <ClInclude Include="Offsets.h" />
     <ClInclude Include="PlayerData.h" />

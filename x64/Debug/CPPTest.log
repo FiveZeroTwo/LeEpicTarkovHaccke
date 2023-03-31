@@ -1,5 +1,42 @@
-﻿  TestOverlay.cpp
-C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\TestOverlay.cpp(273,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\TestOverlay.cpp(273,50): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\TestOverlay.cpp(273,35): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+﻿  EFTPlayer.cpp
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(84,67): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(84,52): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(84,37): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(84,22): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(87,67): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(87,52): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(87,37): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(87,22): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(89,67): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(89,52): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(89,37): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(89,22): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(91,67): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(91,52): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(91,37): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(91,22): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(94,67): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(94,52): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(94,37): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(94,22): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(97,67): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(97,52): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(97,37): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(97,22): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(100,67): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(100,52): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(100,37): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(100,22): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(103,67): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(103,52): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(103,37): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(103,22): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(106,67): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(106,52): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(106,37): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(106,22): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(109,67): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(109,52): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(109,37): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\EFTPlayer.cpp(109,22): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   CPPTest.vcxproj -> C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\x64\Debug\CPPTest.exe

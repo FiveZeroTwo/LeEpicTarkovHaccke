@@ -56,8 +56,9 @@ intptr_t BasicMemoryInterface::GetBaseAddress() {
 }
 
 intptr_t BasicMemoryInterface::GetModuleBase() {
-    return 0x7FFF18FC0000;
+    return 0x7FFECC920000;
 }
+
 bool BasicMemoryInterface::SetTargetModule(wchar_t* moduleName) {
     throw("DRIVER USE ONLY!");
 }
