@@ -2,13 +2,46 @@
 
 intptr_t GameWorld::GetGameWorld(IMemoryInterface* pMemInterface,std::array<intptr_t,2> activeObjects)
 {
+	if (m_gameWorld) {
+		return m_gameWorld;
+	}
 
 	intptr_t result = GameWorld::GetObjectFromList(pMemInterface, activeObjects[1], activeObjects[0], "GameWorld");
 	result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x30);
 	result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x18);
-	result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x28);
+	m_gameWorld = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x28);
 
-	return result;
+	return m_gameWorld;
+}
+
+std::array<intptr_t, 2> GameWorld::GetTaggedObjects(IMemoryInterface* pMemInterface)
+{
+	if (m_taggedObjects[0] && m_taggedObjects[1]) {
+		return m_taggedObjects;
+	}
+
+	m_taggedObjects = Memory::ReadValue<std::array<intptr_t, 2>>(pMemInterface, m_gameObjectManager + 0x8);
+	return m_taggedObjects;
+}
+
+intptr_t GameWorld::GetGameObjectManager(IMemoryInterface* pMemInterface)
+{
+	if (m_gameObjectManager) {
+		return m_gameObjectManager;
+	}
+
+	m_gameObjectManager = Memory::ReadValue<intptr_t>(pMemInterface, pMemInterface->GetModuleBase() + 0x017FFD28);
+	return m_gameObjectManager;
+}
+
+std::array<intptr_t, 2> GameWorld::GetActiveObjects(IMemoryInterface* pMemInterface)
+{
+	if (m_activeObjects[0] && m_activeObjects[1]) {
+		return m_activeObjects;
+	}
+
+	m_activeObjects = Memory::ReadValue<std::array<intptr_t, 2>>(pMemInterface, m_gameObjectManager + 0x20);
+	return m_activeObjects;
 }
 
 intptr_t GameWorld::GetObjectFromList(IMemoryInterface* pMemInterface, intptr_t listPointer, intptr_t lastObjectPointer, const char* objectName)

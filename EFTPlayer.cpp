@@ -1,5 +1,7 @@
 #include "EFTPlayer.h"
 #include "CameraUtilites.h"
+#include <xmmintrin.h>  
+#include <emmintrin.h>
 
 Vector3 EFTPlayer::GetPositionFromTransform( intptr_t transform)
 {
@@ -77,35 +79,82 @@ void EFTPlayer::SetEveryBone(intptr_t eftPlayer)
 	rightThigh2 = EFTPlayer::GetPositionFromTransform(Memory::ReadValue<intptr_t>(pMemInterface, Memory::ReadValue<intptr_t>(pMemInterface, eftPlayer + 0x20 + 25 * 0x8) + 0x10));
 }
 
-void EFTPlayer::DrawBone(intptr_t eftPlayer, Matrix matrix)
+void EFTPlayer::DrawBone(intptr_t eftPlayer, Matrix matrix, Color color)
 {
 	Vector3 bodyPartOne = { 0,0,0 };
 	Vector3 bodyPartTwo = { 0,0,0 };
-	DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, BLUE);
-	CameraUtilites::worldToScreen(head, matrix, bodyPartOne);
-	CameraUtilites::worldToScreen(middleTorso, matrix, bodyPartTwo);
-	DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, BLUE);
-	CameraUtilites::worldToScreen(leftElbow, matrix, bodyPartOne);
-	DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, BLUE);
-	CameraUtilites::worldToScreen(leftWrist, matrix, bodyPartTwo);
-	DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, BLUE);
-	CameraUtilites::worldToScreen(middleTorso, matrix, bodyPartOne);
-	CameraUtilites::worldToScreen(rightElbow, matrix, bodyPartTwo);
-	DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, BLUE);
-	CameraUtilites::worldToScreen(middlePelvis, matrix, bodyPartOne);
-	CameraUtilites::worldToScreen(rightKnee, matrix, bodyPartTwo);
-	DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, BLUE);
-	CameraUtilites::worldToScreen(middlePelvis, matrix, bodyPartOne);
-	CameraUtilites::worldToScreen(leftKnee, matrix, bodyPartTwo);
-	DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, BLUE);
-	CameraUtilites::worldToScreen(leftKnee, matrix, bodyPartOne);
-	CameraUtilites::worldToScreen(leftAnkle, matrix, bodyPartTwo);
-	DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, BLUE);
-	CameraUtilites::worldToScreen(rightKnee, matrix, bodyPartOne);
-	CameraUtilites::worldToScreen(rightAnkle, matrix, bodyPartTwo);
-	DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, BLUE);
-	CameraUtilites::worldToScreen(middleTorso, matrix, bodyPartOne);
-	CameraUtilites::worldToScreen(middlePelvis, matrix, bodyPartTwo);
-	DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, BLUE);
+	if (CameraUtilites::worldToScreen(head, matrix, bodyPartOne) &&
+		CameraUtilites::worldToScreen(middleTorso, matrix, bodyPartTwo)) {
+		DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, color);
+	}
 
+	if (CameraUtilites::worldToScreen(leftElbow, matrix, bodyPartOne) &&
+		CameraUtilites::worldToScreen(leftWrist, matrix, bodyPartTwo)) {
+		DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, color);
+	}
+
+	if (CameraUtilites::worldToScreen(middleTorso, matrix, bodyPartOne) &&
+		CameraUtilites::worldToScreen(rightElbow, matrix, bodyPartTwo)) {
+		DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, color);
+	}
+
+	if (CameraUtilites::worldToScreen(middlePelvis, matrix, bodyPartOne) &&
+		CameraUtilites::worldToScreen(rightKnee, matrix, bodyPartTwo)) {
+		DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, color);
+	}
+
+	if (CameraUtilites::worldToScreen(middlePelvis, matrix, bodyPartOne) &&
+		CameraUtilites::worldToScreen(leftKnee, matrix, bodyPartTwo)) {
+		DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, color);
+	}
+
+	if (CameraUtilites::worldToScreen(leftKnee, matrix, bodyPartOne) &&
+		CameraUtilites::worldToScreen(leftAnkle, matrix, bodyPartTwo)) {
+		DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, color);
+	}
+
+	if (CameraUtilites::worldToScreen(rightKnee, matrix, bodyPartOne) &&
+		CameraUtilites::worldToScreen(rightAnkle, matrix, bodyPartTwo)) {
+		DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, color);
+	}
+
+	if (CameraUtilites::worldToScreen(middleTorso, matrix, bodyPartOne) &&
+		CameraUtilites::worldToScreen(middlePelvis, matrix, bodyPartTwo)) {
+		DrawLine(bodyPartOne.x, bodyPartOne.y, bodyPartTwo.x, bodyPartTwo.y, color);
+	}
+
+}
+
+intptr_t EFTPlayer::GetEFTPlayerClass()
+{
+	if (EFTPlayerClass) {
+		return EFTPlayerClass;
+	}
+
+	intptr_t result = Memory::ReadValue<intptr_t>(pMemInterface, this->instance + 0xA8);
+	result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x28);
+	result = Memory::ReadValue<intptr_t>(pMemInterface, result + 0x28);
+	EFTPlayerClass =  Memory::ReadValue<intptr_t>(pMemInterface, result + 0x10);
+	return EFTPlayerClass;
+}
+
+intptr_t EFTPlayer::GetEFTProfileClass()
+{
+	if (EFTPlayerProfileClass) {
+		return EFTPlayerProfileClass;
+	}
+
+	EFTPlayerProfileClass = Memory::ReadValue<intptr_t>(this->pMemInterface, this->instance + 0x520);
+	return EFTPlayerProfileClass;
+}
+
+unsigned char EFTPlayer::GetPlayerSide()
+{
+	if (playerSide != 0) {
+		return playerSide;
+	}
+
+	intptr_t result = Memory::ReadValue<intptr_t>(this->pMemInterface, GetEFTProfileClass() + 0x28);
+	playerSide = Memory::ReadValue<unsigned char>(this->pMemInterface, result + 0x70);
+	return playerSide;
 }

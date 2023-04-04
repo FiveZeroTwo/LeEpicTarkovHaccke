@@ -1,9 +1,3 @@
-C:\Users\nexus\Documents\Projects\CPP\CPPTest\x64\Debug\CPPTest.vcxproj.CopyComplete
-C:\Users\nexus\Documents\Projects\CPP\CPPTest\x64\Debug\CPPTest.exe
-C:\Users\nexus\Documents\Projects\CPP\CPPTest\x64\Debug\raylib.dll
-C:\Users\user1\Desktop\CPPTest\x64\Debug\CPPTest.vcxproj.CopyComplete
-C:\Users\user1\Desktop\CPPTest\x64\Debug\CPPTest.exe
-C:\Users\user1\Desktop\CPPTest\x64\Debug\raylib.dll
 C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\x64\Debug\CPPTest.vcxproj.CopyComplete
 C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\x64\Debug\CPPTest.exe
 C:\Users\user1\Desktop\CPPTest\LeEpicTarkovHaccke\x64\Debug\raylib.dll

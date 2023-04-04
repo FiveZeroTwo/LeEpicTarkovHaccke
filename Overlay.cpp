@@ -1,6 +1,8 @@
 #include "Overlay.h"
 #include <raylib.h>
+#ifdef USE_IM_GUI
 #include "rlImGui.h"
+#endif
 #include "WinWrapper.h"
 
 #include <iostream>
@@ -33,12 +35,18 @@ Overlay::Overlay(const char* title, int updateRate) : title(title), isMenuOpen(f
 	if (updateRate != 0) {
 		SetTargetFPS(updateRate < 0 ? GetMonitorRefreshRate(GetCurrentMonitor()) : updateRate);
 	}
-
+#ifdef USE_IM_GUI
 	rlImGuiSetup(true);
+
+#endif // USE_IM_GUI
+
 }
 
 Overlay::~Overlay() {
+#ifdef USE_IM_GUI
 	rlImGuiShutdown();
+#endif // USE_IM_GUI
+
 	CloseWindow();
 }
 
@@ -66,6 +74,9 @@ void Overlay::Update() {
 void Overlay::Draw() {
 	BeginDrawing();
 	ClearBackground(BACKGROUND);
+#ifdef USE_IM_GUI
+
+
 	rlImGuiBegin();
 	bool shouldShow = this->ShouldShowMenu();
 	bool needsEnd = false;
@@ -76,13 +87,17 @@ void Overlay::Draw() {
 			ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse
 		);
 	}
+#endif // USE_IM_GUI
 
 	this->DrawImGui();
+#ifdef USE_IM_GUI
 	if (needsEnd) {
 		ImGui::End();
 	}
 
 	rlImGuiEnd();
+#endif
+
 	EndDrawing();
 }
 

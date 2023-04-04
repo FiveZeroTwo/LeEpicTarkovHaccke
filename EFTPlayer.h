@@ -1,7 +1,6 @@
 #pragma once
 #include <raylib.h>
-#include <xmmintrin.h>  
-#include <emmintrin.h>
+
 #include "IMemoryInterface.h"
 class EFTPlayer {
 public:
@@ -28,10 +27,18 @@ public:
 	uintptr_t instance;
 	Vector3 location;
 	intptr_t EFTPlayerClass;
+	intptr_t EFTPlayerProfileClass;
+	unsigned char playerSide;
+	//const char playerNickName[15];
+
 
 	Vector3 GetPositionFromTransform(intptr_t transform);
 	void SetEveryBone(intptr_t eftPlayer);
-	void DrawBone(intptr_t eftPlayer, Matrix matrix);
+	void DrawBone(intptr_t eftPlayer, Matrix matrix, Color color);
+	intptr_t GetEFTPlayerClass();
+	intptr_t GetEFTProfileClass();
+	unsigned char GetPlayerSide();
+	float CalculateDistance(Vector3 player, Vector3 player2);
 private:
 	struct transform_access_read_only_t
 	{

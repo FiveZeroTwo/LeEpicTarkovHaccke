@@ -56,7 +56,7 @@ intptr_t BasicMemoryInterface::GetBaseAddress() {
 }
 
 intptr_t BasicMemoryInterface::GetModuleBase() {
-    return 0x7FFECC920000;
+    return 0x7FFDFA280000;
 }
 
 bool BasicMemoryInterface::SetTargetModule(wchar_t* moduleName) {

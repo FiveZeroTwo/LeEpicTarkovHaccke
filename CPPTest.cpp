@@ -5,7 +5,7 @@
 #include "TestOverlay.h"
 #include "DriverInterop.h"
 
-#define USE_DRIVER 0
+#define USE_DRIVER 1
 
 int main() {
 	IMemoryInterface* pMemoryInterface;

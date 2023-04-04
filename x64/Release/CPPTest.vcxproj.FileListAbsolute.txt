@@ -1,3 +1,0 @@
-C:\Users\user1\Desktop\CPPTest\x64\Release\CPPTest.vcxproj.CopyComplete
-C:\Users\user1\Desktop\CPPTest\x64\Release\CPPTest.exe
-C:\Users\user1\Desktop\CPPTest\x64\Release\raylib.dll

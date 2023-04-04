@@ -35,8 +35,8 @@ bool CameraUtilites::worldToScreen(Vector3 in, Matrix matrix, Vector3& screenSpa
 
 	float y = Vector3DotProduct(in, up) + matrix.m13;
 	float x = Vector3DotProduct(in, right) + matrix.m12;
-	screenSpace.x = (1920 / 2) * (1.f + x / w);
-	screenSpace.y = (1080 / 2) * (1.f - y / w);
+	screenSpace.x = (GetMonitorWidth(0) / 2) * (1.f + x / w);
+	screenSpace.y = (GetMonitorHeight(0) / 2) * (1.f - y / w);
 	screenSpace.z = w;
 
 	return true;
