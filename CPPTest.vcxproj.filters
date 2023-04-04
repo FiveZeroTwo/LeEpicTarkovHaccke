@@ -42,6 +42,18 @@
     <ClCompile Include="BasicMemoryInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CameraUtilites.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EFTPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Aimbot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Overlay.h">
@@ -73,6 +85,18 @@
     </ClInclude>
     <ClInclude Include="PlayerData.h">
       <Filter>AssaultCube</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraUtilites.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EFTPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameWorld.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Aimbot.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

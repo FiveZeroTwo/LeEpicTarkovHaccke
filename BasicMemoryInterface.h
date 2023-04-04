@@ -16,6 +16,8 @@ public:
     intptr_t GetBaseAddress();
     bool ReadRaw(intptr_t address, void* pBuffer, unsigned long size);
     bool WriteRaw(intptr_t address, void* pBuffer, unsigned long size);
+    intptr_t GetModuleBase();
+    bool SetTargetModule(wchar_t* moduleName);
 private:
     void* handle;
     unsigned long pid;

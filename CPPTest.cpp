@@ -11,14 +11,14 @@ int main() {
 	IMemoryInterface* pMemoryInterface;
 #if USE_DRIVER
 	printf_s("Attempting to interop with driver!\n");
-	DriverInterop driverInterop("TestDriver");
+	DriverInterop driverInterop((wchar_t*)"TestDriver");
 	pMemoryInterface = &driverInterop;
 #else
 	printf_s("Attempting to use basic memory interface\n");
 	BasicMemoryInterface basicMemoryInterface{};
 	pMemoryInterface = &basicMemoryInterface;
 #endif
-	TestOverlay overlay{ pMemoryInterface, "TestOverlay", -1};
+	TestOverlay overlay{ pMemoryInterface, "TestOverlay", 60};
 	while (overlay.IsRunning()) {
 		overlay.Update();
 		overlay.Draw();

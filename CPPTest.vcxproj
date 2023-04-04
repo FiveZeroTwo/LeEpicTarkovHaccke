@@ -102,9 +102,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;USE_IM_GUI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <UndefinePreprocessorDefinitions>USE_IM_GUI</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -130,7 +131,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Aimbot.cpp" />
     <ClCompile Include="BasicMemoryInterface.cpp" />
+    <ClCompile Include="CameraUtilites.cpp" />
+    <ClCompile Include="EFTPlayer.cpp" />
+    <ClCompile Include="GameWorld.cpp" />
     <ClCompile Include="TestOverlay.cpp" />
     <ClCompile Include="CPPTest.cpp" />
     <ClCompile Include="DriverInterop.cpp" />
@@ -140,7 +145,11 @@
     <ClCompile Include="WinWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Aimbot.h" />
     <ClInclude Include="BasicMemoryInterface.h" />
+    <ClInclude Include="CameraUtilites.h" />
+    <ClInclude Include="EFTPlayer.h" />
+    <ClInclude Include="GameWorld.h" />
     <ClInclude Include="IMemoryInterface.h" />
     <ClInclude Include="Offsets.h" />
     <ClInclude Include="PlayerData.h" />

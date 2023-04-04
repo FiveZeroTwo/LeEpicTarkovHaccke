@@ -55,6 +55,14 @@ intptr_t BasicMemoryInterface::GetBaseAddress() {
     return baseAddress;
 }
 
+intptr_t BasicMemoryInterface::GetModuleBase() {
+    return 0x7FFDFA280000;
+}
+
+bool BasicMemoryInterface::SetTargetModule(wchar_t* moduleName) {
+    throw("DRIVER USE ONLY!");
+}
+
 bool BasicMemoryInterface::ReadRaw(intptr_t address, void* pBuffer, unsigned long size) {
     if (!this->pid || !this->handle) {
         return false;
